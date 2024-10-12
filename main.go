@@ -177,7 +177,7 @@ func main() {
 	// log clientID, clientSecret, refreshToken
 
 	log.Println("Client ID:", clientID)
-
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	router.GET("/hello", func(c *gin.Context) {
