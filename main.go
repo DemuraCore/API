@@ -173,7 +173,7 @@ func getRecentlyPlayed(c *gin.Context) {
 func main() {
 
 	log.Println("Starting server...")
-	log.Println("Listening on localhost:8080")
+	log.Println("Listening on localhost:3000")
 	// log clientID, clientSecret, refreshToken
 
 	log.Println("Client ID:", clientID)
@@ -187,5 +187,5 @@ func main() {
 	router.GET("/now-playing", getNowPlaying)
 	router.GET("/recently-played", getRecentlyPlayed)
 
-	router.Run("localhost:8080")
+	router.Run("0.0.0.0:3000")
 }
