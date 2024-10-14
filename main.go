@@ -81,7 +81,7 @@ func getNowPlaying(c *gin.Context) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNoContent {
-		c.JSON(http.StatusOK, gin.H{"message": "No song currently playing"})
+		getRecentlyPlayedHelper(c)
 		return
 	}
 
@@ -95,7 +95,7 @@ func getNowPlaying(c *gin.Context) {
 	c.JSON(http.StatusOK, nowPlaying)
 }
 
-func getRecentlyPlayed(c *gin.Context) {
+func getRecentlyPlayedHelper(c *gin.Context) {
 	accessToken, err := getAccessToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get access token"})
@@ -162,6 +162,7 @@ func getRecentlyPlayed(c *gin.Context) {
 	songUrl := recentTrack.Track.ExternalURLs.Spotify
 
 	c.JSON(http.StatusOK, gin.H{
+		"isPlaying":  false,
 		"trackName":  trackName,
 		"artistName": artistName,
 		"albumName":  albumName,
@@ -170,8 +171,11 @@ func getRecentlyPlayed(c *gin.Context) {
 	})
 }
 
-func main() {
+func getRecentlyPlayed(c *gin.Context) {
+	getRecentlyPlayedHelper(c)
+}
 
+func main() {
 	log.Println("Starting server...")
 	log.Println("Listening on localhost:3000")
 	// log clientID, clientSecret, refreshToken
@@ -179,10 +183,6 @@ func main() {
 	log.Println("Client ID:", clientID)
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-
-	router.GET("/hello", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "hello world"})
-	})
 
 	router.GET("/now-playing", getNowPlaying)
 	router.GET("/recently-played", getRecentlyPlayed)
