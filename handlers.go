@@ -32,7 +32,7 @@ func getNowPlaying(c *gin.Context) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNoContent {
-		getRecentlyPlayedHelper(c)
+		getRecentlyPlayed(c)
 		return
 	}
 
@@ -46,7 +46,7 @@ func getNowPlaying(c *gin.Context) {
 	c.JSON(http.StatusOK, nowPlaying)
 }
 
-func getRecentlyPlayedHelper(c *gin.Context) {
+func getRecentlyPlayed(c *gin.Context) {
 	accessToken, err := getAccessToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get access token"})
@@ -120,8 +120,4 @@ func getRecentlyPlayedHelper(c *gin.Context) {
 		"trackPhoto": trackPhoto,
 		"songUrl":    songUrl,
 	})
-}
-
-func getRecentlyPlayed(c *gin.Context) {
-	getRecentlyPlayedHelper(c)
 }
