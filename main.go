@@ -12,19 +12,31 @@ func main() {
 	log.Println("Listening on PORT 3000")
 
 	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
+	Router := gin.Default()
 
-	router.Use(api.AuthMiddleware())
+	/*
+		Core API DemuraCore API V2.0
+		- Requires Authorization
+	*/
+
+	CoreRouter := Router.Group("/core")
+	CoreRouter.Use(api.AuthMiddleware())
+
+	CoreRouter.GET("/discord/me", api.GetMeDetails)
+
+	/*
+		Util API DemuraCore API V2.0
+		- No Authorization required
+		- Public API
+	*/
+	UtilityRouter := Router.Group("/util")
 
 	// Spotify api
-	router.GET("/util/spotify/now-playing", api.GetNowPlaying)
-	router.GET("/util/spotify/recently-played", api.GetRecentlyPlayed)
+	UtilityRouter.GET("/spotify/now-playing", api.GetNowPlaying)
+	UtilityRouter.GET("/spotify/recently-played", api.GetRecentlyPlayed)
 
 	// Heartbeat api
-	router.GET("/heartbeat", api.Heartbeat)
+	Router.GET("/heartbeat", api.Heartbeat)
 
-	// Discord api
-	router.GET("/core/discord/me", api.GetMeDetails)
-
-	router.Run("0.0.0.0:3000")
+	Router.Run("0.0.0.0:3000")
 }
