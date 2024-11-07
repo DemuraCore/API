@@ -1,28 +1,30 @@
 package main
 
 import (
+	"DemuraCore/API/api"
 	"log"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	clientID     = os.Getenv("SPOTIFY_CLIENT_ID")
-	clientSecret = os.Getenv("SPOTIFY_CLIENT_SECRET")
-	refreshToken = os.Getenv("SPOTIFY_REFRESH_TOKEN")
-)
-
 func main() {
-	log.Println("Starting server...")
-	log.Println("Listening on localhost:3000")
+	log.Println("Starting DemuraCore API V2.0...")
+	log.Println("Listening on PORT 3000")
 
-	log.Println("Client ID:", clientID)
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
-	router.GET("/now-playing", getNowPlaying)
-	router.GET("/recently-played", getRecentlyPlayed)
+	router.Use(api.AuthMiddleware())
+
+	// Spotify api
+	router.GET("/util/spotify/now-playing", api.GetNowPlaying)
+	router.GET("/util/spotify/recently-played", api.GetRecentlyPlayed)
+
+	// Heartbeat api
+	router.GET("/heartbeat", api.Heartbeat)
+
+	// Discord api
+	router.GET("/core/discord/me", api.GetMeDetails)
 
 	router.Run("0.0.0.0:3000")
 }

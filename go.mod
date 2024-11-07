@@ -1,4 +1,4 @@
-module API
+module DemuraCore/API
 
 go 1.23.1
 
